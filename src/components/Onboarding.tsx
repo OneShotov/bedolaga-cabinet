@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 interface OnboardingStep {
   target: string; // data-onboarding attribute value
   title: string;
   description: string;
   placement: 'top' | 'bottom' | 'left' | 'right';
+  /** If set, replaces the "Next/Finish" button with a link button that navigates to this path */
+  actionPath?: string;
+  /** Label for the action button (defaults to Next/Finish) */
+  actionLabel?: string;
 }
 
 interface OnboardingProps {
@@ -38,6 +43,7 @@ export function useOnboarding() {
 
 export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -49,12 +55,12 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
   }, [onComplete]);
 
   const step = steps[currentStep];
+  const isLastStep = currentStep === steps.length - 1;
 
   useEffect(() => {
     let cancelled = false;
     let attempts = 0;
     const maxAttempts = 6;
-    const isLastStep = currentStep === steps.length - 1;
 
     setIsVisible(false);
     setTargetRect(null);
@@ -124,6 +130,14 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
 
   const handleSkip = () => {
     onSkip();
+  };
+
+  /** Called when the step has actionPath — navigates and marks onboarding complete */
+  const handleActionButton = () => {
+    onComplete();
+    if (step.actionPath) {
+      navigate(step.actionPath);
+    }
   };
 
   // Calculate tooltip position
@@ -238,20 +252,26 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
             onClick={handleSkip}
             className="text-sm text-dark-500 transition-colors hover:text-dark-300"
           >
-            {t('onboarding.skip', 'Skip')}
+            {t('onboarding.skip', 'Пропустить')}
           </button>
 
           <div className="flex gap-2">
             {currentStep > 0 && (
               <button onClick={handlePrev} className="btn-ghost px-3 py-1.5 text-sm">
-                {t('common.back', 'Back')}
+                {t('common.back', 'Назад')}
               </button>
             )}
-            <button onClick={handleNext} className="btn-primary px-4 py-1.5 text-sm">
-              {currentStep === steps.length - 1
-                ? t('onboarding.finish', 'Finish')
-                : t('common.next', 'Next')}
-            </button>
+            {step.actionPath ? (
+              <button onClick={handleActionButton} className="btn-primary px-4 py-1.5 text-sm">
+                {step.actionLabel ?? t('onboarding.goToProfile', 'Перейти в профиль')}
+              </button>
+            ) : (
+              <button onClick={handleNext} className="btn-primary px-4 py-1.5 text-sm">
+                {isLastStep
+                  ? t('onboarding.finish', 'Готово')
+                  : t('common.next', 'Далее')}
+              </button>
+            )}
           </div>
         </div>
       </div>

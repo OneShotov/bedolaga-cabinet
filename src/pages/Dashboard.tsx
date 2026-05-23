@@ -203,21 +203,27 @@ export default function Dashboard() {
     ? multiSubData !== undefined && (multiSubData.subscriptions?.length ?? 0) === 0
     : subscriptionResponse?.has_subscription === false && !subLoading;
 
-  // Show onboarding for new users after data loads
+  // Show onboarding for new users after data loads (wait for user object too)
   useEffect(() => {
-    if (!isOnboardingCompleted && !subLoading && !refLoading && !blockingType) {
+    if (!isOnboardingCompleted && !subLoading && !refLoading && !blockingType && user) {
       const timer = setTimeout(() => setShowOnboarding(true), 500);
       return () => clearTimeout(timer);
     }
-  }, [isOnboardingCompleted, subLoading, refLoading, blockingType]);
+  }, [isOnboardingCompleted, subLoading, refLoading, blockingType, user]);
 
   const onboardingSteps = useMemo(() => {
     type Placement = 'top' | 'bottom' | 'left' | 'right';
+
+    const hasTelegram = user?.telegram_id != null;
+    const hasEmail = user?.email != null;
+
     const steps: Array<{
       target: string;
       title: string;
       description: string;
       placement: Placement;
+      actionPath?: string;
+      actionLabel?: string;
     }> = [
       {
         target: 'welcome',
@@ -242,8 +248,40 @@ export default function Dashboard() {
       });
     }
 
+    // Сценарий A: вошёл через Telegram, email не привязан
+    if (hasTelegram && !hasEmail) {
+      steps.push({
+        target: 'balance',
+        title: t('onboarding.steps.linkEmail.title', 'Привяжите email'),
+        description: t(
+          'onboarding.steps.linkEmail.description',
+          'Сайт работает даже при ограниченном доступе к интернету. Привяжите email, чтобы управлять подпиской и оплачивать её в любой ситуации.',
+        ),
+        placement: 'bottom',
+        actionPath: '/profile/accounts',
+        actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
+      });
+    }
+
+    // Сценарий B: вошёл через email, Telegram не привязан
+    if (hasEmail && !hasTelegram) {
+      steps.push({
+        target: 'balance',
+        title: t('onboarding.steps.linkTelegram.title', 'Привяжите Telegram'),
+        description: t(
+          'onboarding.steps.linkTelegram.description',
+          'Привяжите аккаунт Telegram, чтобы управлять подпиской через бота @h0pp_bot. Если аккаунт в боте уже есть — он автоматически объединится с этим.',
+        ),
+        placement: 'bottom',
+        actionPath: '/profile/accounts',
+        actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
+      });
+    }
+
+    // Сценарий C: оба привязаны — дополнительный шаг не добавляется
+
     return steps;
-  }, [t, subscription]);
+  }, [t, subscription, user]);
 
   const handleOnboardingComplete = () => {
     completeOnboarding();
