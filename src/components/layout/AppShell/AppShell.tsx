@@ -322,6 +322,7 @@ export function AppShell({ children }: AppShellProps) {
                 key={item.path}
                 to={item.path}
                 onClick={handleNavClick}
+                {...(item.path === '/profile' ? { 'data-onboarding': 'profile-anchor' } : {})}
                 className={cn(
                   'group flex items-center rounded-xl px-2.5 py-2 transition-all duration-200',
                   isActive(item.path)
