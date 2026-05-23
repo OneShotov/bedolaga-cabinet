@@ -36,12 +36,15 @@ export default function Dashboard() {
   const queryClient = useQueryClient();
   const { isCompleted: isOnboardingCompleted, complete: completeOnboarding } = useOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  // Tracks whether refreshUser() has completed at least once — ensures
+  // onboardingSteps are computed from fresh API data, not stale localStorage cache.
+  const [userRefreshed, setUserRefreshed] = useState(false);
   const blockingType = useBlockingStore((state) => state.blockingType);
   const [trialError, setTrialError] = useState<string | null>(null);
 
-  // Refresh user data on mount
+  // Refresh user data on mount — set userRefreshed when done
   useEffect(() => {
-    refreshUser();
+    refreshUser().finally(() => setUserRefreshed(true));
   }, [refreshUser]);
 
   // Fetch balance from API
@@ -203,13 +206,14 @@ export default function Dashboard() {
     ? multiSubData !== undefined && (multiSubData.subscriptions?.length ?? 0) === 0
     : subscriptionResponse?.has_subscription === false && !subLoading;
 
-  // Show onboarding for new users after data loads (wait for user object too)
+  // Show onboarding only after refreshUser() has completed so that
+  // onboardingSteps are built from fresh API data (not localStorage cache).
   useEffect(() => {
-    if (!isOnboardingCompleted && !subLoading && !refLoading && !blockingType && user) {
+    if (!isOnboardingCompleted && !subLoading && !refLoading && !blockingType && userRefreshed) {
       const timer = setTimeout(() => setShowOnboarding(true), 500);
       return () => clearTimeout(timer);
     }
-  }, [isOnboardingCompleted, subLoading, refLoading, blockingType, user]);
+  }, [isOnboardingCompleted, subLoading, refLoading, blockingType, userRefreshed]);
 
   const onboardingSteps = useMemo(() => {
     type Placement = 'top' | 'bottom' | 'left' | 'right';
