@@ -255,13 +255,15 @@ export default function Dashboard() {
     // Сценарий A: вошёл через Telegram, email не привязан
     if (hasTelegram && !hasEmail) {
       steps.push({
-        target: 'profile',
+        // 'profile' присутствует в DesktopSidebar; на мобиле fallback на 'profile-anchor'
+        // который рендерится невидимым элементом в Dashboard (см. ниже)
+        target: 'profile-anchor',
         title: t('onboarding.steps.linkEmail.title', 'Привяжите email'),
         description: t(
           'onboarding.steps.linkEmail.description',
           'Сайт работает даже при ограниченном доступе к интернету. Привяжите email, чтобы управлять подпиской и оплачивать её в любой ситуации.',
         ),
-        placement: 'right',
+        placement: 'bottom',
         actionPath: '/profile/accounts',
         actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
       });
@@ -270,13 +272,13 @@ export default function Dashboard() {
     // Сценарий B: вошёл через email, Telegram не привязан
     if (hasEmail && !hasTelegram) {
       steps.push({
-        target: 'profile',
+        target: 'profile-anchor',
         title: t('onboarding.steps.linkTelegram.title', 'Привяжите Telegram'),
         description: t(
           'onboarding.steps.linkTelegram.description',
           'Привяжите аккаунт Telegram, чтобы управлять подпиской через бота @h0pp_bot. Если аккаунт в боте уже есть — он автоматически объединится с этим.',
         ),
-        placement: 'right',
+        placement: 'bottom',
         actionPath: '/profile/accounts',
         actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
       });
@@ -325,6 +327,15 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Invisible anchor for onboarding profile step — always present in DOM.
+          On desktop the spotlight also covers DesktopSidebar's data-onboarding="profile".
+          On mobile this anchor sits at the top of the page content area. */}
+      <div
+        data-onboarding="profile-anchor"
+        aria-hidden="true"
+        style={{ position: 'absolute', top: 0, right: 0, width: 1, height: 1, pointerEvents: 'none' }}
+      />
 
       {/* Pending Gift Activations */}
       {pendingGifts && pendingGifts.length > 0 && <PendingGiftCard gifts={pendingGifts} />}
