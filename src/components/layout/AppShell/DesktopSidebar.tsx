@@ -179,6 +179,7 @@ export function DesktopSidebar({
       <div className="border-t border-dark-700/30 p-3">
         <Link
           to="/profile"
+          data-onboarding="profile"
           onClick={handleNavClick}
           className={cn(
             'group flex items-center gap-3 rounded-linear px-3 py-2.5 transition-all duration-200',

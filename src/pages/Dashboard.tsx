@@ -255,13 +255,13 @@ export default function Dashboard() {
     // Сценарий A: вошёл через Telegram, email не привязан
     if (hasTelegram && !hasEmail) {
       steps.push({
-        target: 'balance',
+        target: 'profile',
         title: t('onboarding.steps.linkEmail.title', 'Привяжите email'),
         description: t(
           'onboarding.steps.linkEmail.description',
           'Сайт работает даже при ограниченном доступе к интернету. Привяжите email, чтобы управлять подпиской и оплачивать её в любой ситуации.',
         ),
-        placement: 'bottom',
+        placement: 'right',
         actionPath: '/profile/accounts',
         actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
       });
@@ -270,13 +270,13 @@ export default function Dashboard() {
     // Сценарий B: вошёл через email, Telegram не привязан
     if (hasEmail && !hasTelegram) {
       steps.push({
-        target: 'balance',
+        target: 'profile',
         title: t('onboarding.steps.linkTelegram.title', 'Привяжите Telegram'),
         description: t(
           'onboarding.steps.linkTelegram.description',
           'Привяжите аккаунт Telegram, чтобы управлять подпиской через бота @h0pp_bot. Если аккаунт в боте уже есть — он автоматически объединится с этим.',
         ),
-        placement: 'bottom',
+        placement: 'right',
         actionPath: '/profile/accounts',
         actionLabel: t('onboarding.goToProfile', 'Перейти в профиль'),
       });
