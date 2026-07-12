@@ -98,7 +98,7 @@ export function CommandPalette({
       action: () => navigate('/balance'),
     },
     {
-      label: t('subscription.get_config') || 'Get VPN config',
+      label: t('subscription.get_config') || 'Get config',
       icon: DownloadIcon,
       action: () => navigate('/subscriptions'),
     },

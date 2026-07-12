@@ -40,7 +40,7 @@ export function useBranding() {
 
   // Set document title
   useEffect(() => {
-    document.title = appName || 'VPN';
+    document.title = appName || 'h0pp';
   }, [appName]);
 
   // Update favicon — custom logo (rounded like the header tile) when available,

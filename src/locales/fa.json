@@ -304,7 +304,7 @@
     "expired": "منقضی شده",
     "trafficLimited": "ترافیک تمام شده",
     "trafficLimitedTitle": "محدودیت ترافیک",
-    "trafficLimitedDescription": "ترافیک شما تمام شده است. برای ادامه استفاده از VPN، ترافیک اضافی خریداری کنید.",
+    "trafficLimitedDescription": "ترافیک شما تمام شده است. برای ادامه استفاده، ترافیک اضافی خریداری کنید.",
     "expiresAt": "تاریخ انقضا",
     "daysLeft": "روز باقی‌مانده",
     "devices": "دستگاه‌ها",
@@ -375,7 +375,7 @@
     "stepConfirm": "تایید",
     "trial": {
       "title": "دوره آزمایشی رایگان",
-      "description": "سرویس VPN ما را رایگان امتحان کنید!",
+      "description": "سرویس ما را رایگان امتحان کنید!",
       "days": "روز",
       "days_other": "{{count}} روز",
       "devices": "دستگاه",
@@ -388,12 +388,12 @@
       "topUpToActivate": "برای فعال‌سازی دوره آزمایشی موجودی را افزایش دهید"
     },
     "connection": {
-      "title": "اتصال VPN",
+      "title": "اتصال",
       "selectDevice": "دستگاه خود را انتخاب کنید",
       "selectApp": "برنامه را انتخاب کنید",
       "installApp": "۱. نصب برنامه",
       "addSubscription": "۲. افزودن اشتراک",
-      "connectVpn": "۳. اتصال VPN",
+      "connectVpn": "۳. اتصال",
       "addToApp": "افزودن به {{appName}}",
       "connect": "اتصال",
       "noApps": "برنامه‌ای برای این پلتفرم موجود نیست",
@@ -566,7 +566,7 @@
     "confirmDelete": "اشتراک حذف شود؟",
     "cta": {
       "renewHint": "اشتراک منقضی شده — برای ادامه استفاده تمدید کنید",
-      "activeHint": "اشتراک فعال است — می‌توانید دستگاه‌ها را متصل کرده و از VPN استفاده کنید",
+      "activeHint": "اشتراک فعال است — می‌توانید دستگاه‌ها را متصل کرده و از سرویس استفاده کنید",
       "expiredHint": "اشتراک منقضی شده — برای ادامه استفاده تمدید کنید",
       "trialHint": "شما در دوره آزمایشی هستید — برای دسترسی به همه امکانات به تعرفه پرداختی ارتقا دهید"
     },
@@ -2893,7 +2893,7 @@
         "lastActivity": "آخرین فعالیت",
         "botActivity": "فعالیت در ربات",
         "cabinetLastLogin": "آخرین ورود به کابینت",
-        "vpnConnection": "اتصال VPN",
+        "vpnConnection": "اتصال",
         "lastConnection": "آخرین اتصال",
         "firstConnection": "اولین اتصال",
         "online": "آنلاین",
@@ -4351,7 +4351,7 @@
       },
       "connectDevices": {
         "title": "اتصال دستگاه‌ها",
-        "description": "این دکمه را بزنید تا راهنمای اتصال VPN روی دستگاه‌هایتان را دریافت کنید."
+        "description": "این دکمه را بزنید تا راهنمای اتصال روی دستگاه‌هایتان را دریافت کنید."
       },
       "balance": {
         "title": "موجودی شما",
@@ -4742,7 +4742,7 @@
   },
   "gift": {
     "title": "هدیه اشتراک",
-    "subtitle": "اشتراک VPN را به عنوان هدیه ارسال کنید",
+    "subtitle": "اشتراک را به عنوان هدیه ارسال کنید",
     "choosePeriod": "انتخاب مدت",
     "chooseTariff": "انتخاب طرح",
     "recipient": "گیرنده",
@@ -4825,7 +4825,7 @@
     "shareGift": "به اشتراک گذاشتن هدیه",
     "shareModalActivateVia": "از طریق فعال‌سازی",
     "shareModalActivateViaCabinet": "از طریق کابین",
-    "shareText": "برای شما هدیه‌ای از Bedolaga VPN دارم: {{code}}",
+    "shareText": "برای شما هدیه‌ای از h0pp دارم: {{code}}",
     "shareToastCopied": "لینک کپی شد",
     "statusActivated": "فعال شده",
     "statusAvailable": "قابل فعال‌سازی",

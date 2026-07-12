@@ -154,13 +154,13 @@ export default function Login() {
     }
   };
 
-  const appName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'VPN';
+  const appName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'h0pp';
   const appLogo = branding?.logo_letter || import.meta.env.VITE_APP_LOGO || 'V';
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
 
   // Set document title
   useEffect(() => {
-    document.title = appName || 'VPN';
+    document.title = appName || 'h0pp';
   }, [appName]);
 
   useEffect(() => {

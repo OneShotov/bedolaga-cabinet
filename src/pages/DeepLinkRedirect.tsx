@@ -67,7 +67,7 @@ export default function DeepLinkRedirect() {
     staleTime: 60000,
   });
 
-  const projectName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'VPN';
+  const projectName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'h0pp';
   const logoLetter = branding?.logo_letter || import.meta.env.VITE_APP_LOGO || 'V';
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
 
@@ -95,7 +95,7 @@ export default function DeepLinkRedirect() {
   const appInfo = deepLink
     ? appSchemes.find((a) => deepLink.toLowerCase().startsWith(a.scheme))
     : null;
-  const appName = appInfo?.name || appParam || 'VPN';
+  const appName = appInfo?.name || appParam || 'h0pp';
   const appIcon = appInfo?.icon || appName[0]?.toUpperCase() || 'V';
 
   // Open deep link via a contained iframe attempt so a custom scheme the in-app
@@ -177,7 +177,7 @@ export default function DeepLinkRedirect() {
           )}
         </div>
 
-        <h1 className="mb-1 text-2xl font-bold text-dark-50">{projectName || 'VPN'}</h1>
+        <h1 className="mb-1 text-2xl font-bold text-dark-50">{projectName || 'h0pp'}</h1>
 
         {status !== 'error' && (
           <p className="mb-6 text-dark-400">
@@ -303,7 +303,7 @@ export default function DeepLinkRedirect() {
         {/* Footer */}
         <div className="mt-8 flex items-center justify-center gap-2 text-dark-600">
           <LinkIcon className="h-4 w-4" />
-          <span className="text-xs">VPN Config Redirect</span>
+          <span className="text-xs">Config Redirect</span>
         </div>
       </div>
     </div>

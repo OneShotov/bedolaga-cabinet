@@ -42,7 +42,7 @@ export default function TelegramRedirect() {
     staleTime: 60000,
   });
 
-  const appName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'VPN';
+  const appName = branding ? branding.name : import.meta.env.VITE_APP_NAME || 'h0pp';
   const logoLetter = branding?.logo_letter || import.meta.env.VITE_APP_LOGO || 'V';
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
 

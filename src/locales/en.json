@@ -300,7 +300,7 @@
     "trialOffer": {
       "freeTitle": "Free Trial Available",
       "paidTitle": "Trial Subscription",
-      "freeDesc": "Try our VPN for free, no commitment required",
+      "freeDesc": "Try our service for free, no commitment required",
       "paidDesc": "Get started with a trial subscription"
     },
     "stats": {
@@ -323,7 +323,7 @@
     "expired": "Expired",
     "trafficLimited": "Traffic Exhausted",
     "trafficLimitedTitle": "Traffic Limit Reached",
-    "trafficLimitedDescription": "Your traffic has been exhausted. Purchase additional traffic below to continue using VPN.",
+    "trafficLimitedDescription": "Your traffic has been exhausted. Purchase additional traffic below to continue using the service.",
     "expiresAt": "Expires at",
     "daysLeft": "Days left",
     "devices": "Devices",
@@ -419,7 +419,7 @@
     "trial": {
       "title": "Free Trial",
       "titlePaid": "Trial Subscription",
-      "description": "Try our VPN service!",
+      "description": "Try our service!",
       "days": "days",
       "days_one": "{{count}} day",
       "days_other": "{{count}} days",
@@ -446,19 +446,19 @@
     },
     "trialUpgrade": {
       "title": "Choose a plan to continue",
-      "description": "Your trial period is ending soon. Select a plan to continue using VPN without restrictions."
+      "description": "Your trial period is ending soon. Select a plan to continue using the service without restrictions."
     },
     "expiredBanner": {
       "title": "Subscription expired",
-      "selectTariff": "Your subscription has expired. Choose a plan below to restore access to VPN."
+      "selectTariff": "Your subscription has expired. Choose a plan below to restore access."
     },
     "connection": {
-      "title": "Connect VPN",
+      "title": "Connect",
       "selectDevice": "Select your device",
       "selectApp": "Select app",
       "installApp": "1. Install the app",
       "addSubscription": "2. Add subscription",
-      "connectVpn": "3. Connect VPN",
+      "connectVpn": "3. Connect",
       "addToApp": "Add to {{appName}}",
       "connect": "Connect",
       "noApps": "No apps available for this platform",
@@ -4808,7 +4808,7 @@
       },
       "connectDevices": {
         "title": "Connect Devices",
-        "description": "Click this button to get instructions on how to connect VPN on your devices."
+        "description": "Click this button to get instructions on how to connect on your devices."
       },
       "balance": {
         "title": "Your Balance",
@@ -5086,7 +5086,7 @@
   },
   "gift": {
     "title": "Gift Subscription",
-    "subtitle": "Send a VPN subscription as a gift",
+    "subtitle": "Send a subscription as a gift",
     "choosePeriod": "Choose period",
     "chooseTariff": "Choose tariff",
     "recipient": "Recipient",

@@ -304,7 +304,7 @@
     "expired": "已过期",
     "trafficLimited": "流量已用尽",
     "trafficLimitedTitle": "流量已达上限",
-    "trafficLimitedDescription": "您的流量已用尽。请在下方购买额外流量以继续使用VPN。",
+    "trafficLimitedDescription": "您的流量已用尽。请在下方购买额外流量以继续使用服务。",
     "expiresAt": "到期时间",
     "daysLeft": "剩余天数",
     "devices": "设备",
@@ -375,7 +375,7 @@
     "stepConfirm": "确认",
     "trial": {
       "title": "免费试用",
-      "description": "免费试用我们的VPN服务！",
+      "description": "免费试用我们的服务！",
       "days": "天",
       "days_other": "{{count}} 天",
       "devices": "设备",
@@ -388,12 +388,12 @@
       "topUpToActivate": "充值以激活试用"
     },
     "connection": {
-      "title": "连接VPN",
+      "title": "连接",
       "selectDevice": "选择您的设备",
       "selectApp": "选择应用",
       "installApp": "1. 安装应用",
       "addSubscription": "2. 添加订阅",
-      "connectVpn": "3. 连接VPN",
+      "connectVpn": "3. 连接",
       "addToApp": "添加到 {{appName}}",
       "connect": "连接",
       "noApps": "此平台暂无可用应用",
@@ -566,7 +566,7 @@
     "confirmDelete": "删除订阅？",
     "cta": {
       "renewHint": "订阅已过期 — 续订以继续使用",
-      "activeHint": "订阅有效 — 您可以连接设备并使用 VPN",
+      "activeHint": "订阅有效 — 您可以连接设备并使用服务",
       "expiredHint": "订阅已过期 — 续订以继续使用",
       "trialHint": "您正在试用中 — 升级到付费套餐以解锁所有功能"
     },
@@ -4350,7 +4350,7 @@
       },
       "connectDevices": {
         "title": "连接设备",
-        "description": "点击此按钮获取在您的设备上连接VPN的说明。"
+        "description": "点击此按钮获取在您的设备上连接的说明。"
       },
       "balance": {
         "title": "您的余额",
@@ -4741,7 +4741,7 @@
   },
   "gift": {
     "title": "赠送订阅",
-    "subtitle": "将VPN订阅作为礼物发送",
+    "subtitle": "将订阅作为礼物发送",
     "choosePeriod": "选择时长",
     "chooseTariff": "选择套餐",
     "recipient": "收件人",
@@ -4824,7 +4824,7 @@
     "shareGift": "分享礼物",
     "shareModalActivateVia": "通过以下方式激活",
     "shareModalActivateViaCabinet": "通过个人中心",
-    "shareText": "我为您准备了一份 Bedolaga VPN 礼物：{{code}}",
+    "shareText": "我为您准备了一份 h0pp 礼物：{{code}}",
     "shareToastCopied": "链接已复制",
     "statusActivated": "已激活",
     "statusAvailable": "可激活",
