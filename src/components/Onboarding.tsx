@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface OnboardingStep {
   target: string; // data-onboarding attribute value
@@ -139,6 +140,16 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
       navigate(step.actionPath);
     }
   };
+  // Trap focus inside the tooltip while the tour runs; Esc skips it.
+  // lockScroll stays off so scrollIntoView can bring each target into view.
+  const trapRef = useFocusTrap<HTMLDivElement>(true, { onEscape: handleSkip, lockScroll: false });
+  const setTooltipNode = useCallback(
+    (node: HTMLDivElement | null) => {
+      tooltipRef.current = node;
+      trapRef.current = node;
+    },
+    [trapRef],
+  );
 
   // Calculate tooltip position
   const getTooltipStyle = (): React.CSSProperties => {
@@ -219,7 +230,11 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
 
       {/* Tooltip */}
       <div
-        ref={tooltipRef}
+        ref={setTooltipNode}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="onboarding-title"
+        aria-describedby="onboarding-desc"
         className={`onboarding-tooltip tooltip-${step.placement}`}
         style={{
           ...getTooltipStyle(),
@@ -243,8 +258,12 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
         </div>
 
         {/* Content */}
-        <h3 className="mb-2 text-lg font-semibold text-dark-50">{step.title}</h3>
-        <p className="mb-5 text-sm text-dark-400">{step.description}</p>
+        <h3 id="onboarding-title" className="mb-2 text-lg font-semibold text-dark-50">
+          {step.title}
+        </h3>
+        <p id="onboarding-desc" className="mb-5 text-sm text-dark-400">
+          {step.description}
+        </p>
 
         {/* Actions */}
         <div className="flex items-center justify-between">
@@ -279,6 +298,7 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
       {/* Click handler to advance on target click — only when overlay is fully visible */}
       {targetRect && isVisible && (
         <div
+          aria-hidden="true"
           className="absolute cursor-pointer"
           style={{
             top: targetRect.top,
