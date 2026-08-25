@@ -496,6 +496,8 @@ function FooterLinks() {
           >
             Политика конфиденциальности
           </button>
+          <span>·</span>
+          <span>money</span>
         </div>
       </footer>
 
