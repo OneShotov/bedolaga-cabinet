@@ -287,9 +287,7 @@ export default function Onboarding({ steps, onComplete, onSkip }: OnboardingProp
               </button>
             ) : (
               <button onClick={handleNext} className="btn-primary px-4 py-1.5 text-sm">
-                {isLastStep
-                  ? t('onboarding.finish', 'Готово')
-                  : t('common.next', 'Далее')}
+                {isLastStep ? t('onboarding.finish', 'Готово') : t('common.next', 'Далее')}
               </button>
             )}
           </div>

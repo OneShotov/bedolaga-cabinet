@@ -419,11 +419,21 @@ h0pp — 21 августа 2026
 
 Используя Сервис (в том числе запуская бота и/или вводя команду /start), Пользователь подтверждает, что ознакомлен с настоящим Соглашением и принимает его условия в полном объёме.`;
 
-function LegalModal({ title, content, onClose }: { title: string; content: string; onClose: () => void }) {
+function LegalModal({
+  title,
+  content,
+  onClose,
+}: {
+  title: string;
+  content: string;
+  onClose: () => void;
+}) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
     document.addEventListener('keydown', handleKey);
     document.body.style.overflow = 'hidden';
     return () => {
@@ -436,7 +446,9 @@ function LegalModal({ title, content, onClose }: { title: string; content: strin
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[200] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center"
-      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      onClick={(e) => {
+        if (e.target === overlayRef.current) onClose();
+      }}
     >
       <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-t-2xl border border-dark-700/50 bg-dark-900 sm:rounded-2xl">
         {/* Header */}
@@ -451,7 +463,9 @@ function LegalModal({ title, content, onClose }: { title: string; content: strin
         </div>
         {/* Content */}
         <div className="overflow-y-auto px-6 py-4">
-          <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-dark-300">{content}</pre>
+          <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-dark-300">
+            {content}
+          </pre>
         </div>
       </div>
     </div>

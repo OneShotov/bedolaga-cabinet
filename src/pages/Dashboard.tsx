@@ -245,7 +245,6 @@ export default function Dashboard() {
   // не предлагаем, её карточка ведёт на переход на тариф.
   const hasLegacy = hasLegacySubscription(multiSubData?.subscriptions);
 
-
   // Show onboarding only after refreshUser() has completed so that
   // onboardingSteps are built from fresh API data (not localStorage cache).
   useEffect(() => {
@@ -367,7 +366,14 @@ export default function Dashboard() {
       <div
         data-onboarding="profile-anchor"
         aria-hidden="true"
-        style={{ position: 'absolute', top: 0, right: 0, width: 1, height: 1, pointerEvents: 'none' }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: 1,
+          height: 1,
+          pointerEvents: 'none',
+        }}
       />
 
       {/* Pending Gift Activations */}
