@@ -378,7 +378,10 @@ function FooterLinks() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="w-[calc(100%-2rem)] max-w-2xl" aria-describedby={undefined}>
           <DialogTitle className="pr-8">{LEGAL_DOCS[doc].title}</DialogTitle>
-          <LegalDocContent doc={doc} />
+          {/* Прокручивается только текст: крестик и заголовок остаются на месте. */}
+          <div className="max-h-[65vh] overflow-y-auto">
+            <LegalDocContent doc={doc} />
+          </div>
         </DialogContent>
       </Dialog>
     </>
