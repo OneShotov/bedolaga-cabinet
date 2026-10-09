@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,10 @@ import { resetVirtualKeyboard } from '@/hooks/useVirtualKeyboard';
 import { themeColorsApi } from '@/api/themeColors';
 import { isLogoPreloaded } from '@/api/branding';
 import { cn } from '@/lib/utils';
+import { infoApi } from '@/api/info';
+import { formatContent } from '@/utils/legalContent';
+import { Dialog, DialogContent, DialogTitle } from '@/components/primitives/Dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import WebSocketNotifications from '@/components/WebSocketNotifications';
 import CampaignBonusNotifier from '@/components/CampaignBonusNotifier';
@@ -36,7 +40,6 @@ import {
   InfoIcon,
   SunIcon,
   MoonIcon,
-  CloseIcon,
 } from '@/components/icons';
 
 import { MobileBottomNav } from './MobileBottomNav';
@@ -300,215 +303,84 @@ export function AppShell({ children }: AppShellProps) {
 // Footer with legal document modals
 // ============================================================
 
-const PRIVACY_POLICY = `Политика конфиденциальности
+// Тексты — из бота (/cabinet/info/*): те же, что на /offer и /privacy и у галочки
+// согласия при регистрации. Документ один, правится в админке бота.
+type LegalDoc = 'offer' | 'privacy';
 
-h0pp — 21 августа 2026
+const LEGAL_DOCS: Record<
+  LegalDoc,
+  { title: string; queryKey: string; load: (language?: string) => Promise<{ content: string }> }
+> = {
+  offer: {
+    title: 'Пользовательское соглашение',
+    queryKey: 'public-offer',
+    load: infoApi.getPublicOffer,
+  },
+  privacy: {
+    title: 'Политика конфиденциальности',
+    queryKey: 'privacy-policy',
+    load: infoApi.getPrivacyPolicy,
+  },
+};
 
-Настоящая Политика конфиденциальности регулирует порядок сбора, использования и защиты информации пользователей сервиса h0pp, доступного на сайте codehubcentral.com и в Telegram-боте @h0pp_bot (далее — «Сервис»). Сервис может собирать идентификаторы аккаунта, техническую информацию и историю взаимодействий. Полученные данные используются исключительно для обеспечения работы сервиса, связи с пользователями и анализа работы системы.
+function LegalDocContent({ doc }: { doc: LegalDoc }) {
+  const { t, i18n } = useTranslation();
+  // Язык интерфейса; если текста на нём нет, бот отдаёт язык по умолчанию.
+  const locale = (i18n.language ?? '').split('-')[0];
+  const { queryKey, load } = LEGAL_DOCS[doc];
+  // Ключ как у PublicLegal — общий кеш со страницами /offer и /privacy.
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['public-legal', queryKey, locale],
+    queryFn: () => load(locale),
+    staleTime: 5 * 60 * 1000,
+  });
 
-Передача информации третьим лицам возможна только в случаях, предусмотренных законодательством, либо с согласия пользователя. Данные хранятся в течение срока, необходимого для работы сервиса, и защищаются разумными мерами безопасности. Пользователь самостоятельно несёт ответственность за риски, связанные с передачей данных через интернет.
-
-Администрация вправе вносить изменения в настоящую Политику без предварительного уведомления. Продолжение использования сервиса означает согласие пользователя с актуальной редакцией Политики.
-
-1. Общие положения
-
-1.1. Настоящая Политика конфиденциальности (далее — «Политика») регулирует порядок обработки и защиты информации, которую Пользователь передаёт при использовании сервиса (далее — «Сервис»).
-
-1.2. Используя Сервис, Пользователь подтверждает своё согласие с условиями настоящей Политики. Если Пользователь не согласен с условиями Политики, он обязан прекратить использование Сервиса.
-
-2. Сбор информации
-
-2.1. Сервис может собирать следующие типы данных:
-— идентификаторы аккаунта (логин, ID, никнейм и т.п.);
-— техническую информацию (IP-адрес, данные о браузере, устройстве и операционной системе);
-— историю взаимодействий с Сервисом.
-
-2.2. Сервис не требует от Пользователя предоставления паспортных данных, документов, фотографий или другой личной информации, кроме минимально необходимой для работы сервиса.
-
-3. Использование информации
-
-3.1. Полученная информация используется исключительно для:
-— обеспечения работы функционала сервиса;
-— связи с Пользователем (уведомления, поддержка);
-— анализа и улучшения работы сервиса.
-
-4. Передача информации третьим лицам
-
-4.1. Администрация не передаёт данные третьим лицам, за исключением следующих случаев:
-— если передача требуется в соответствии с законодательством;
-— если передача необходима для исполнения обязательств перед Пользователем;
-— если Пользователь дал явное согласие на передачу данных.
-
-5. Хранение и защита данных
-
-5.1. Данные хранятся в течение срока, необходимого для достижения целей их обработки.
-5.2. Администрация принимает разумные меры для защиты данных, однако не может гарантировать абсолютную безопасность информации, передаваемой через интернет.
-
-6. Ограничение ответственности
-
-6.1. Пользователь понимает и принимает, что передача информации через интернет всегда связана с определёнными рисками.
-6.2. Администрация не несёт ответственности за утрату, кражу или раскрытие данных, если это произошло по вине третьих лиц либо вследствие действий самого Пользователя.
-
-7. Изменения в Политике
-
-7.1. Администрация вправе изменять условия настоящей Политики без предварительного уведомления пользователей.
-7.2. Продолжение использования Сервиса после внесения изменений означает согласие Пользователя с новой редакцией Политики конфиденциальности.`;
-
-const TERMS_OF_SERVICE = `Пользовательское соглашение
-
-h0pp — 21 августа 2026
-
-1. Общие положения
-
-1.1. Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует порядок использования онлайн-сервиса h0pp, доступного на сайте codehubcentral.com и в Telegram-боте @h0pp_bot (далее — «Сервис»), предоставляемого Администрацией.
-
-1.2. Используя Сервис, включая запуск бота, регистрацию, оплату услуг или получение доступа к материалам, Пользователь подтверждает, что полностью ознакомился с условиями настоящего Соглашения и принимает их в полном объёме.
-
-1.3. В случае несогласия с условиями настоящего Соглашения Пользователь обязан прекратить использование Сервиса.
-
-2. Характер услуг и цифровых товаров
-
-2.1. Сервис предоставляет цифровые товары и услуги нематериального характера, включая, но не ограничиваясь: информационные материалы, обучающие программы, консультации, цифровые продукты и сервисные услуги.
-
-2.2. Пользователь соглашается, что ценность цифровых товаров и услуг Сервиса заключается в систематизации информации, анализе, форме подачи, сопровождении, поддержке и обновлениях.
-
-2.3. Сервис не гарантирует уникальность или исключительность отдельных элементов предоставляемых материалов.
-
-3. Отказ от гарантий и ответственности
-
-3.1. Сервис предоставляется на условиях «AS IS» («как есть»).
-
-3.2. Администрация не гарантирует:
-— соответствие Сервиса ожиданиям Пользователя;
-— достижение каких-либо финансовых, коммерческих или профессиональных результатов;
-— бесперебойную и безошибочную работу Сервиса.
-
-3.3. Все решения о применении материалов, рекомендаций и услуг принимаются Пользователем самостоятельно и на свой риск.
-
-4. Законность использования
-
-4.1. Сервис не предназначен для поощрения, организации или содействия противоправной деятельности.
-4.2. Пользователь обязуется использовать Сервис исключительно в рамках действующего законодательства.
-4.3. Ответственность за законность использования материалов и услуг Сервиса полностью возлагается на Пользователя.
-
-5. Интеллектуальная собственность
-
-5.1. Все материалы, размещённые в Сервисе, защищены законодательством об интеллектуальной собственности.
-5.2. Пользователю запрещается копировать, распространять, перепродавать или иным образом использовать материалы Сервиса без разрешения правообладателя.
-
-6. Ограничение доступа
-
-6.1. Администрация вправе приостановить или ограничить доступ Пользователя к Сервису в случае нарушения условий настоящего Соглашения.
-6.2. Ограничение доступа не освобождает Пользователя от ранее возникших обязательств.
-
-7. Платежи и возвраты
-
-7.1. Оплата услуг и цифровых товаров осуществляется на условиях, указанных в Сервисе до момента оплаты.
-7.2. В связи с нематериальным характером цифровых товаров возврат денежных средств после предоставления доступа не осуществляется, за исключением случаев технической вины Сервиса.
-7.3. Для рассмотрения запроса о возврате Пользователь должен обратиться в службу поддержки в течение 24 часов с момента оплаты.
-7.4. Пользователь обязуется не инициировать возврат платежа (chargeback) без предварительного обращения в службу поддержки.
-
-8. Изменение условий
-
-8.1. Администрация вправе изменять условия настоящего Соглашения.
-8.2. Продолжение использования Сервиса означает согласие Пользователя с обновлёнными условиями.
-
-9. Контактная информация
-
-9.1. По всем вопросам Пользователь может обратиться в службу поддержки через форму обратной связи в боте.
-
-Используя Сервис (в том числе запуская бота и/или вводя команду /start), Пользователь подтверждает, что ознакомлен с настоящим Соглашением и принимает его условия в полном объёме.`;
-
-function LegalModal({
-  title,
-  content,
-  onClose,
-}: {
-  title: string;
-  content: string;
-  onClose: () => void;
-}) {
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', handleKey);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
-
+  if (isLoading) return <Skeleton variant="card" count={3} className="h-16" />;
+  if (isError || !data?.content) {
+    return (
+      <p className="text-sm text-dark-400">
+        {t('info.documentUnavailable', 'Документ пока недоступен.')}
+      </p>
+    );
+  }
   return (
     <div
-      ref={overlayRef}
-      className="fixed inset-0 z-[200] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center"
-      onClick={(e) => {
-        if (e.target === overlayRef.current) onClose();
-      }}
-    >
-      <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-t-2xl border border-dark-700/50 bg-dark-900 sm:rounded-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-dark-700/50 px-6 py-4">
-          <h2 className="text-base font-semibold text-dark-100">{title}</h2>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-dark-400 transition-colors hover:bg-dark-800 hover:text-dark-100"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-        {/* Content */}
-        <div className="overflow-y-auto px-6 py-4">
-          <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-dark-300">
-            {content}
-          </pre>
-        </div>
-      </div>
-    </div>
+      className="prose prose-sm prose-invert max-w-none"
+      dangerouslySetInnerHTML={{ __html: formatContent(data.content) }}
+    />
   );
 }
 
 function FooterLinks() {
-  const [modal, setModal] = useState<'privacy' | 'terms' | null>(null);
+  // doc не сбрасываем при закрытии: окно уходит с анимацией и держит текст до конца.
+  const [doc, setDoc] = useState<LegalDoc>('offer');
+  const [open, setOpen] = useState(false);
+
+  const show = (next: LegalDoc) => {
+    setDoc(next);
+    setOpen(true);
+  };
 
   return (
     <>
       <footer className="pb-[calc(var(--mobile-nav-clearance)+0.5rem)] pt-6 text-center lg:pb-8">
         <div className="flex items-center justify-center gap-4 text-xs text-dark-500">
-          <button
-            onClick={() => setModal('terms')}
-            className="transition-colors hover:text-dark-300"
-          >
-            Пользовательское соглашение
+          <button onClick={() => show('offer')} className="transition-colors hover:text-dark-300">
+            {LEGAL_DOCS.offer.title}
           </button>
           <span>·</span>
-          <button
-            onClick={() => setModal('privacy')}
-            className="transition-colors hover:text-dark-300"
-          >
-            Политика конфиденциальности
+          <button onClick={() => show('privacy')} className="transition-colors hover:text-dark-300">
+            {LEGAL_DOCS.privacy.title}
           </button>
         </div>
       </footer>
 
-      {modal === 'privacy' && (
-        <LegalModal
-          title="Политика конфиденциальности"
-          content={PRIVACY_POLICY}
-          onClose={() => setModal(null)}
-        />
-      )}
-      {modal === 'terms' && (
-        <LegalModal
-          title="Пользовательское соглашение"
-          content={TERMS_OF_SERVICE}
-          onClose={() => setModal(null)}
-        />
-      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="w-[calc(100%-2rem)] max-w-2xl" aria-describedby={undefined}>
+          <DialogTitle className="pr-8">{LEGAL_DOCS[doc].title}</DialogTitle>
+          <LegalDocContent doc={doc} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
