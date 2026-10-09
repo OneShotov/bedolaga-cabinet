@@ -3305,7 +3305,7 @@
       "offlineConv": "Offline Conversions",
       "apiKey": "API Key",
       "legalFooter": "Legal Footer",
-      "legalFooterDesc": "Links to the offer, privacy policy and recurring payments at the bottom of the login page",
+      "legalFooterDesc": "Links to the user agreement, privacy policy and recurring payments at the bottom of the login page",
       "botStartVideo": "Bot start-menu video",
       "botStartVideoDesc": "The bot attaches this video to the /start message instead of the logo image. The file is uploaded to Telegram once — we only keep its identifier.",
       "botStartVideoUpload": "Upload video",
@@ -5069,7 +5069,7 @@
             "gift": "Gift",
             "info": "Information",
             "news": "News article",
-            "offer": "Public offer",
+            "offer": "User Agreement",
             "privacy": "Privacy policy",
             "polls": "Polls",
             "profile": "Profile",
@@ -6087,7 +6087,7 @@
         "faq": "FAQ",
         "rules": "Rules",
         "privacy": "Privacy",
-        "offer": "Offer"
+        "offer": "User Agreement"
       },
       "displayModes": {
         "bot": "Bot only",
@@ -6131,11 +6131,11 @@
     },
     "legalPages": {
       "title": "System pages",
-      "subtitle": "Rules, privacy policy, public offer and FAQ",
+      "subtitle": "Rules, privacy policy, user agreement and FAQ",
       "open": "System pages",
       "tabs": {
         "privacy": "Privacy",
-        "offer": "Offer",
+        "offer": "User Agreement",
         "recurrent": "Recurring Payments",
         "rules": "Rules",
         "faq": "FAQ"
@@ -7272,7 +7272,7 @@
     "faq": "FAQ",
     "rules": "Rules",
     "privacy": "Privacy Policy",
-    "offer": "Public Offer",
+    "offer": "User Agreement",
     "loyalty": "Loyalty",
     "noFaq": "No FAQ available",
     "noContent": "No content available",
@@ -7803,7 +7803,7 @@
     "title": "My subscriptions"
   },
   "footer": {
-    "offer": "Public Offer",
+    "offer": "User Agreement",
     "privacy": "Privacy Policy",
     "recurrent": "Recurring Payments"
   },

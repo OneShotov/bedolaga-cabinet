@@ -309,15 +309,23 @@ type LegalDoc = 'offer' | 'privacy';
 
 const LEGAL_DOCS: Record<
   LegalDoc,
-  { title: string; queryKey: string; load: (language?: string) => Promise<{ content: string }> }
+  {
+    titleKey: string;
+    titleFallback: string;
+    queryKey: string;
+    load: (language?: string) => Promise<{ content: string }>;
+  }
 > = {
+  // Ключи названий — общие с галочкой согласия, подвалом входа и /offer, /privacy.
   offer: {
-    title: 'Пользовательское соглашение',
+    titleKey: 'footer.offer',
+    titleFallback: 'Пользовательское соглашение',
     queryKey: 'public-offer',
     load: infoApi.getPublicOffer,
   },
   privacy: {
-    title: 'Политика конфиденциальности',
+    titleKey: 'footer.privacy',
+    titleFallback: 'Политика конфиденциальности',
     queryKey: 'privacy-policy',
     load: infoApi.getPrivacyPolicy,
   },
@@ -352,9 +360,12 @@ function LegalDocContent({ doc }: { doc: LegalDoc }) {
 }
 
 function FooterLinks() {
+  const { t } = useTranslation();
   // doc не сбрасываем при закрытии: окно уходит с анимацией и держит текст до конца.
   const [doc, setDoc] = useState<LegalDoc>('offer');
   const [open, setOpen] = useState(false);
+
+  const title = (d: LegalDoc) => t(LEGAL_DOCS[d].titleKey, LEGAL_DOCS[d].titleFallback);
 
   const show = (next: LegalDoc) => {
     setDoc(next);
@@ -366,18 +377,18 @@ function FooterLinks() {
       <footer className="pb-[calc(var(--mobile-nav-clearance)+0.5rem)] pt-6 text-center lg:pb-8">
         <div className="flex items-center justify-center gap-4 text-xs text-dark-500">
           <button onClick={() => show('offer')} className="transition-colors hover:text-dark-300">
-            {LEGAL_DOCS.offer.title}
+            {title('offer')}
           </button>
           <span>·</span>
           <button onClick={() => show('privacy')} className="transition-colors hover:text-dark-300">
-            {LEGAL_DOCS.privacy.title}
+            {title('privacy')}
           </button>
         </div>
       </footer>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="w-[calc(100%-2rem)] max-w-2xl" aria-describedby={undefined}>
-          <DialogTitle className="pr-8">{LEGAL_DOCS[doc].title}</DialogTitle>
+          <DialogTitle className="pr-8">{title(doc)}</DialogTitle>
           {/* Прокручивается только текст: крестик и заголовок остаются на месте. */}
           <div className="max-h-[65vh] overflow-y-auto">
             <LegalDocContent doc={doc} />
