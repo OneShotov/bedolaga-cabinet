@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { safeLocal } from '../utils/safeStorage';
 
 interface OnboardingStep {
   target: string; // data-onboarding attribute value
@@ -26,16 +27,16 @@ const STORAGE_KEY = 'onboarding_completed';
 // eslint-disable-next-line react-refresh/only-export-components
 export function useOnboarding() {
   const [isCompleted, setIsCompleted] = useState(() => {
-    return localStorage.getItem(STORAGE_KEY) === 'true';
+    return safeLocal.getItem(STORAGE_KEY) === 'true';
   });
 
   const complete = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'true');
+    safeLocal.setItem(STORAGE_KEY, 'true');
     setIsCompleted(true);
   }, []);
 
   const reset = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    safeLocal.removeItem(STORAGE_KEY);
     setIsCompleted(false);
   }, []);
 

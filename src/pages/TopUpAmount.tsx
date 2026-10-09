@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
 
 import { balanceApi } from '../api/balance';
 import { useCurrency } from '../hooks/useCurrency';
@@ -15,7 +16,9 @@ import BentoCard from '../components/ui/BentoCard';
 import { saveTopUpPendingInfo } from '../utils/topUpStorage';
 import { getSafeRedirectPath } from '../utils/safeRedirect';
 import { openPaymentUrl } from '../utils/openPaymentUrl';
+import { getApiErrorMessage } from '../utils/api-error';
 import { copyToClipboard } from '@/utils/clipboard';
+import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import {
   CardIcon,
   CheckIcon,
@@ -141,6 +144,7 @@ export default function TopUpAmount() {
     getPreferredOptionId(method?.options),
   );
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const [qrPayload, setQrPayload] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   // Canonical RUB amount when the user picked a quick-amount chip. The input shows a
@@ -199,8 +203,7 @@ export default function TopUpAmount() {
     },
     onError: (err: unknown) => {
       haptic.notification('error');
-      const axiosError = err as { response?: { data?: { detail?: string }; status?: number } };
-      setError(axiosError?.response?.data?.detail || t('balance.errors.invoiceFailed'));
+      setError(getApiErrorMessage(err, t('balance.errors.invoiceFailed')));
     },
   });
 
@@ -213,6 +216,7 @@ export default function TopUpAmount() {
       amount_rubles: number;
       status: string;
       expires_at: string | null;
+      qr_payload?: string | null;
     },
     unknown,
     number
@@ -255,6 +259,13 @@ export default function TopUpAmount() {
           lowerUrl.startsWith('https://t.me/') ||
           lowerUrl.startsWith('http://t.me/') ||
           lowerUrl.startsWith('tg://');
+        // Свой экран оплаты: QR показываем здесь же — уводить на страницу провайдера незачем.
+        if (data.qr_payload) {
+          setQrPayload(data.qr_payload);
+          setPaymentUrl(redirectUrl);
+          return;
+        }
+
         if (method?.open_url_direct && !isTelegramDeepLink) {
           // In the Telegram WebView, same-container navigation to the provider page breaks
           // when it hands off to a bank app via a custom scheme (SBP) — Android shows
@@ -268,8 +279,7 @@ export default function TopUpAmount() {
       }
     },
     onError: (err: unknown) => {
-      const detail =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || '';
+      const detail = getApiErrorMessage(err, '');
       setError(
         detail.includes('not yet implemented') ? t('balance.useBot') : detail || t('common.error'),
       );
@@ -295,9 +305,9 @@ export default function TopUpAmount() {
       return null;
     }
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent-500 border-t-transparent" />
-      </div>
+      <SkeletonGroup className="space-y-3">
+        <Skeleton variant="card" count={3} className="h-16" />
+      </SkeletonGroup>
     );
   }
 
@@ -313,6 +323,7 @@ export default function TopUpAmount() {
   const handleSubmit = () => {
     setError(null);
     setPaymentUrl(null);
+    setQrPayload(null);
     inputRef.current?.blur();
 
     if (!checkRateLimit(RATE_LIMIT_KEYS.PAYMENT, 3, 30000)) {
@@ -351,7 +362,7 @@ export default function TopUpAmount() {
       // display-currency rounding step below it, so typing the advertised (rounded)
       // minimum isn't rejected by FX rounding.
       const decimals = targetCurrency === 'IRR' ? 0 : 2;
-      const roundingStep = convertToRub(Math.pow(10, -decimals));
+      const roundingStep = convertToRub(10 ** -decimals);
       if (canonicalRubles < minRubles && canonicalRubles >= minRubles - roundingStep) {
         canonicalRubles = minRubles;
       }
@@ -428,7 +439,9 @@ export default function TopUpAmount() {
         <div className="flex-1">
           <h3 className="text-lg font-bold text-dark-100">{methodName}</h3>
           <p className="text-sm text-dark-400">
-            {formatAmount(minRubles, 0)} – {formatAmount(maxRubles, 0)} {currencySymbol}
+            {formatAmount(minRubles, 0)} – {formatAmount(maxRubles, 0)}
+            {'\u00A0'}
+            {currencySymbol}
           </p>
         </div>
       </motion.div>
@@ -550,7 +563,7 @@ export default function TopUpAmount() {
                   {formatAmount(a, 0)}
                 </span>
                 <span
-                  className={`mt-0.5 text-xs ${isSelected ? 'text-accent-400/70' : 'text-dark-500'}`}
+                  className={`mt-0.5 text-xs ${isSelected ? 'text-accent-400' : 'text-dark-500'}`}
                 >
                   {currencySymbol}
                 </span>
@@ -582,7 +595,21 @@ export default function TopUpAmount() {
             <span className="font-semibold">{t('balance.paymentReady')}</span>
           </div>
 
-          <p className="text-sm text-dark-400">{t('balance.clickToOpenPayment')}</p>
+          {qrPayload ? (
+            <div className="flex flex-col items-center gap-2">
+              <div className="rounded-xl bg-white p-3" data-testid="topup-qr">
+                <QRCodeSVG value={qrPayload} size={192} level="M" includeMargin={false} />
+              </div>
+              <p className="text-center text-sm text-dark-400">
+                {t(
+                  'balance.scanQrToPay',
+                  'Отсканируйте QR-код в приложении банка или откройте оплату',
+                )}
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-dark-400">{t('balance.clickToOpenPayment')}</p>
+          )}
 
           <button
             type="button"
