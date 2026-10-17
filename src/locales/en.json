@@ -27,7 +27,8 @@
     "units": {
       "tb": "TB",
       "gb": "GB",
-      "mb": "MB"
+      "mb": "MB",
+      "days": "days"
     },
     "retry": "Retry",
     "saving": "Saving...",
@@ -836,7 +837,10 @@
       "autopayHint": "Your subscription will renew automatically via Cashera",
       "purchaseButton": "⚡ Subscribe with Cashera auto-pay",
       "purchaseHint": "Confirm auto-charges via the Cashera link; renewals are then charged automatically."
-    }
+    },
+    "allTariffsPurchasedDesc": "You already have all available plans. You can renew a subscription on its plan page.",
+    "deleteWarning": "The subscription will be deleted permanently. All its data, devices and settings will be lost.",
+    "insufficientBalanceAmount": "Insufficient balance. {{missing}} short"
   },
   "balance": {
     "title": "Balance",
@@ -7319,8 +7323,17 @@
       "quickActions": {
         "title": "Quick Actions",
         "description": "Use these buttons for quick access to main features: top up balance, extend subscription, and invite friends."
+      },
+      "linkEmail": {
+        "title": "Link your email",
+        "description": "The website works even when internet access is limited. Link an email to manage and pay for your subscription in any situation."
+      },
+      "linkTelegram": {
+        "title": "Link Telegram",
+        "description": "Link your Telegram account to manage your subscription through our Telegram bot. If you already have an account in the bot, it will be merged with this one automatically."
       }
-    }
+    },
+    "goToProfile": "Go to profile"
   },
   "promo": {
     "activeDiscount": "Active discount",
