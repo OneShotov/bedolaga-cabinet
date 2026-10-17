@@ -82,13 +82,11 @@ function CopyableField({ label, value }: { label: string; value: string }) {
 
 function CabinetCredentialsState({
   cabinetEmail,
-  cabinetPassword,
   autoLoginToken,
   tariffName,
   periodDays,
 }: {
   cabinetEmail: string;
-  cabinetPassword: string | null;
   autoLoginToken: string | null;
   tariffName: string | null;
   periodDays: number | null;
@@ -138,14 +136,9 @@ function CabinetCredentialsState({
 
       {/* Credentials */}
       <div className="w-full space-y-3">
+        {/* Аудит К-1: пароль на странице с токеном в адресе не показываем — только письмом. */}
         <CopyableField label={t('landing.cabinetEmail')} value={cabinetEmail} />
-        {cabinetPassword && (
-          <CopyableField label={t('landing.cabinetPassword')} value={cabinetPassword} />
-        )}
-        {cabinetPassword && <p className="text-xs text-dark-400">{t('landing.saveCredentials')}</p>}
-        {!cabinetPassword && (
-          <p className="text-xs text-dark-400">{t('landing.credentialsSentToEmail')}</p>
-        )}
+        <p className="text-xs text-dark-400">{t('landing.credentialsSentToEmail')}</p>
       </div>
 
       {/* Go to Cabinet button */}
@@ -671,6 +664,12 @@ export default function PurchaseSuccess() {
   const [activationError, setActivationError] = useState(false);
   const activatingRef = useRef(false);
 
+  // Аудит К-1: токен — секрет. После чтения из адреса убираем его из строки
+  // браузера (история, закладки); страница работает с токеном из useParams.
+  useEffect(() => {
+    if (token) window.history.replaceState(window.history.state, '', '/buy/success');
+  }, [token]);
+
   // Referrer-Policy: prevent leaking payment token via referer header
   useEffect(() => {
     const meta = document.createElement('meta');
@@ -709,6 +708,8 @@ export default function PurchaseSuccess() {
       return false;
     },
     retry: 2,
+    // Секреты бот отдаёт один раз — перезапрос при возврате на вкладку их стёр бы.
+    refetchOnWindowFocus: false,
   });
 
   const handleRetryPoll = useCallback(() => {
@@ -739,7 +740,7 @@ export default function PurchaseSuccess() {
   // Idempotency keyed by token so a page refresh doesn't double-count.
   useEffect(() => {
     if (!isSuccess || !token) return;
-    const FIRED_KEY = `ym_buy_success_${token}`;
+    const FIRED_KEY = `ym_buy_success_${token.slice(0, 8)}`; // не весь токен: это секрет
     try {
       if (localStorage.getItem(FIRED_KEY)) return;
     } catch {
@@ -803,7 +804,6 @@ export default function PurchaseSuccess() {
         ) : isEmailSelfPurchase ? (
           <CabinetCredentialsState
             cabinetEmail={purchaseStatus.cabinet_email!}
-            cabinetPassword={purchaseStatus.cabinet_password}
             autoLoginToken={purchaseStatus.auto_login_token}
             tariffName={purchaseStatus.tariff_name}
             periodDays={purchaseStatus.period_days}
