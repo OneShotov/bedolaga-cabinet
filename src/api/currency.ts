@@ -23,11 +23,22 @@ const FALLBACK_RATES: ExchangeRates = {
   IRR: 0.0024, // 1 IRR = 0.0024 RUB (or 1 RUB = ~420 IRR)
 };
 
+// VITE_FIXED_USD_RATE (₽ за $, h0pp EU) — постоянный курс вместо биржевого: тот же,
+// что CRYPTOBOT_FOREIGN_USD_RATE у бота, поэтому цена в кабинете ровная и совпадает
+// со счётом CryptoBot. Не задан — курс с биржи, как раньше.
+const FIXED_USD_RATE = Number(import.meta.env.VITE_FIXED_USD_RATE) || 0;
+export const FIXED_RATES: ExchangeRates | null =
+  FIXED_USD_RATE > 0 ? { ...FALLBACK_RATES, USD: FIXED_USD_RATE } : null;
+
 let cachedRates: CachedRates | null = null;
 
 export const currencyApi = {
   // Get all exchange rates (RUB to other currencies)
   getExchangeRates: async (): Promise<ExchangeRates> => {
+    if (FIXED_RATES) {
+      return FIXED_RATES;
+    }
+
     // Check cache first
     if (cachedRates && Date.now() - cachedRates.timestamp < CACHE_DURATION) {
       return cachedRates.rates;

@@ -9,6 +9,10 @@ interface ImportMetaEnv {
   readonly VITE_APP_LOGO?: string;
   /** Optional override for the backend liveness URL (defaults to `<origin>/health/unified`). */
   readonly VITE_HEALTH_URL?: string;
+  /** Языки кабинета через запятую, первый — по умолчанию (h0pp EU: `en`). */
+  readonly VITE_LANGUAGES?: string;
+  /** Постоянный курс ₽ за $ вместо биржевого (h0pp EU: тот же, что у бота). */
+  readonly VITE_FIXED_USD_RATE?: string;
 }
 
 interface ImportMeta {

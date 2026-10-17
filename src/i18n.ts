@@ -3,15 +3,25 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { getTelegramLanguageCode } from './hooks/useTelegramSDK';
 
-const localeLoaders: Record<string, () => Promise<{ default: ResourceLanguage }>> = {
+const allLocaleLoaders: Record<string, () => Promise<{ default: ResourceLanguage }>> = {
   ru: () => import('./locales/ru.json'),
   en: () => import('./locales/en.json'),
   zh: () => import('./locales/zh.json'),
   fa: () => import('./locales/fa.json'),
 };
 
+// VITE_LANGUAGES=en (h0pp EU) — кабинет только на этих языках, первый — язык по
+// умолчанию; ни браузер, ни Telegram не переключат на другой. Не задан — все языки.
+const ENV_LANGS = (import.meta.env.VITE_LANGUAGES || '')
+  .split(',')
+  .map((code) => code.trim())
+  .filter((code) => code in allLocaleLoaders);
+const localeLoaders = ENV_LANGS.length
+  ? Object.fromEntries(ENV_LANGS.map((code) => [code, allLocaleLoaders[code]]))
+  : allLocaleLoaders;
+
 const SUPPORTED_LANGS = Object.keys(localeLoaders);
-const FALLBACK_LNG = 'ru';
+const FALLBACK_LNG = ENV_LANGS[0] || 'ru';
 const LANGUAGE_STORAGE_KEY = 'cabinet_language';
 
 const loadedLanguages = new Set<string>();

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { currencyApi, type ExchangeRates } from '../api/currency';
+import { currencyApi, FIXED_RATES, type ExchangeRates } from '../api/currency';
 import { setExchangeRates as setGlobalExchangeRates } from '../utils/format';
 import { formatDecimal } from '../utils/formatNumber';
 import { uiLocale } from '../utils/uiLocale';
@@ -25,7 +25,7 @@ export function useCurrency() {
   const { i18n, t } = useTranslation();
 
   // Fetch exchange rates
-  const { data: exchangeRates = DEFAULT_RATES } = useQuery({
+  const { data: exchangeRates = FIXED_RATES ?? DEFAULT_RATES } = useQuery({
     queryKey: ['exchange-rates'],
     queryFn: currencyApi.getExchangeRates,
     staleTime: 60 * 60 * 1000, // 1 hour

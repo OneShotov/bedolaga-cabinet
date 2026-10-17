@@ -10,7 +10,7 @@ export function formatUptime(seconds: number): string {
 }
 
 import i18next from 'i18next';
-import { currencyApi, type ExchangeRates } from '../api/currency';
+import { currencyApi, FIXED_RATES, type ExchangeRates } from '../api/currency';
 import { uiLocale } from './uiLocale';
 
 const LANG_CURRENCY_MAP: Record<
@@ -41,8 +41,9 @@ export function formatPrice(kopeks: number, lang?: string): string {
 
   // Конвертация по курсу для не-рублёвых локалей. Без rates fallback на сырую сумму
   // (поведение до фикса), чтобы первый рендер до загрузки курсов не отдавал NaN.
-  if (config.key && cachedExchangeRates) {
-    amount = currencyApi.convertFromRub(amount, config.key, cachedExchangeRates);
+  const rates = cachedExchangeRates ?? FIXED_RATES;
+  if (config.key && rates) {
+    amount = currencyApi.convertFromRub(amount, config.key, rates);
   }
 
   // Для IRR суммы большие — без дробной части.
