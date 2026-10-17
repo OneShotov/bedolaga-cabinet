@@ -61,6 +61,15 @@ function injectGoogleAds(conversionId: string) {
   document.head.appendChild(init);
 }
 
+// Аудит К-1/В-1: на этих страницах в адресе — токен покупки, входа, подтверждения
+// или сброса. Счётчик с вебвизором отправил бы URL и содержимое страницы в
+// Метрику, поэтому здесь аналитика не загружается вовсе.
+const SENSITIVE_PATH = /^\/(buy\/(success|gift)(\/|$)|merge\/|coupon\/|auto-login|verify-email|reset-password)/;
+
+export function isSensitiveAnalyticsPath(pathname: string): boolean {
+  return SENSITIVE_PATH.test(pathname);
+}
+
 /**
  * Fetches analytics counter settings from the API and dynamically
  * injects Yandex Metrika and/or Google Ads scripts into <head>.
@@ -74,6 +83,7 @@ export function useAnalyticsCounters() {
 
   useEffect(() => {
     if (!data) return;
+    if (isSensitiveAnalyticsPath(window.location.pathname)) return;
 
     // Yandex Metrika
     if (data.yandex_metrika_id) {
