@@ -13,6 +13,10 @@ interface ImportMetaEnv {
   readonly VITE_LANGUAGES?: string;
   /** Постоянный курс ₽ за $ вместо биржевого (h0pp EU: тот же, что у бота). */
   readonly VITE_FIXED_USD_RATE?: string;
+  /** Подвал: ссылка на поддержку, на политику возвратов и кодовое слово (h0pp EU). */
+  readonly VITE_SUPPORT_URL?: string;
+  readonly VITE_REFUND_URL?: string;
+  readonly VITE_FOOTER_CODEWORD?: string;
 }
 
 interface ImportMeta {

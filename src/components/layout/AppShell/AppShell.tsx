@@ -47,6 +47,7 @@ import { isMobileNavScreen, mobileNavItems } from './mobileNavRoutes';
 import { AppHeader } from './AppHeader';
 import { LogoutButton } from './LogoutButton';
 import { useBackgroundConsumer } from '@/components/backgrounds/BackgroundHost';
+import FooterExtras from '@/components/FooterExtras';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -383,6 +384,7 @@ function FooterLinks() {
           <button onClick={() => show('privacy')} className="transition-colors hover:text-dark-300">
             {title('privacy')}
           </button>
+          <FooterExtras linkClassName="transition-colors hover:text-dark-300" />
         </div>
       </footer>
 

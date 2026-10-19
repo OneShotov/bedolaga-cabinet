@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import FooterExtras from './FooterExtras';
 
 interface LegalLink {
   href: string;
@@ -36,6 +37,7 @@ export default function LegalFooter({ className = '' }: LegalFooterProps) {
           {t(link.labelKey, link.fallback)}
         </a>
       ))}
+      <FooterExtras linkClassName="transition-colors hover:text-accent-400" />
     </footer>
   );
 }
